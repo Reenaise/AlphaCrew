@@ -134,22 +134,4 @@ input {
   border-radius: 10px;
   border: solid 1px;
 }
-
 </style>
-
-<style>
-body {
-margin: 0;
-padding: 0;
-height: 100%;
-background-image: url('../assets/img/background.png'); /* Path to your background image */
-background-size: cover; /* Ensures the background image covers the whole screen */
-background-position: center; /* Centers the background image */
-background-repeat: no-repeat; /* Prevents the image from repeating */
-}
-
-html, body, #app {
-height: 100%; /* Ensures the body and app take full height of the viewport */
-}
-</style>
-
