@@ -14,6 +14,7 @@ import HomeView2 from '@/views/HomeView2.vue';
 import IncomeSummary from '@/views/IncomeSummary.vue';
 import Expenses from '@/views/Expenses.vue';
 import Income from '@/views/Income.vue';
+import ProfileSettings from '@/views/ProfileSettings.vue';
 
 
 
@@ -103,7 +104,12 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: Register,
-    }
+    },
+    {
+      path: '/profile-settings',
+      name: 'profile-settings',
+      component: ProfileSettings,
+    },
   ],
 });
 

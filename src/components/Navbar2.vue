@@ -153,6 +153,20 @@ const isActiveLink = (routePath) => {
                 ]"
                 >RipotiYaMapato</RouterLink
               >
+              <RouterLink
+                to="/profile-settings"
+                :class="[
+                  isActiveLink('/profile-settings')
+                    ? 'bg-green-900'
+                    : 'hover:bg-gray-900 hover:text-white',
+                  'text-green',
+                  'px-3',
+                  'py-2',
+                  'rounded-md',
+                  'text-decoration-none'
+                ]"
+                >Wasifu</RouterLink
+              >
             </div>
           </div>
           <div class>
