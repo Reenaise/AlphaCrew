@@ -1,10 +1,18 @@
 <script setup>
 import { RouterLink, useRoute } from 'vue-router';
 import logo from '@/assets/img/sifa.png';
+import { ref } from 'vue';
+import profileIcon from '@/assets/img/profile.jpg';
 
 const isActiveLink = (routePath) => {
   const route = useRoute();
   return route.path === routePath;
+};
+
+const isDropdownOpen = ref(false);
+
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
 };
 </script>
 
@@ -153,57 +161,64 @@ const isActiveLink = (routePath) => {
                 ]"
                 >RipotiYaMapato</RouterLink
               >
-              <RouterLink
-                to="/profile-settings"
-                :class="[
-                  isActiveLink('/profile-settings')
-                    ? 'bg-green-900'
-                    : 'hover:bg-gray-900 hover:text-white',
-                  'text-green',
-                  'px-3',
-                  'py-2',
-                  'rounded-md',
-                  'text-decoration-none'
-                ]"
-                >Wasifu</RouterLink
-              >
             </div>
           </div>
-          <div class>
-            <div class="flex space-x-2">
-              <RouterLink
-                to="/"
-                :class="[
-                  isActiveLink('/logout')
-                    ? 'bg-green-900'
-                    : 'hover:bg-gray-900 hover:text-white',
-                  'text-green',
-                  'px-3',
-                  'py-2',
-                  'rounded-md',
-                  'text-decoration-none'
-                ]"
-                >Jiondoe</RouterLink
+          
+          <!-- Replace logout link with profile dropdown -->
+          <div class="relative">
+            <button @click="toggleDropdown" class="flex items-center space-x-2">
+              <img 
+                :src="profileIcon" 
+                alt="Profile" 
+                class="w-8 h-8 rounded-full cursor-pointer"
+              />
+              <!-- Add chevron down icon -->
+              <svg
+                class="w-4 h-4 text-green-500"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
               >
-              <!-- <RouterLink
-                to="/register"
-                :class="[
-                  isActiveLink('/register')
-                    ? 'bg-green-900'
-                    : 'hover:bg-gray-900 hover:text-white',
-                  'text-white',
-                  'px-3',
-                  'py-2',
-                  'rounded-md',
-                  'text-decoration-none'
-                ]"
-                >Sign Up</RouterLink
-              > -->
+                <path
+                  fill-rule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            
+            <!-- Dropdown Menu -->
+            <div v-if="isDropdownOpen" 
+                 class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+              <div class="py-1">
+                <RouterLink 
+                  to="/profile-settings"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Mpangilio wa Akaunti
+                </RouterLink>
+                <RouterLink 
+                  to="/"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Jiondoe
+                </RouterLink>
               </div>
             </div>
-
+          </div>
+          
         </div>
       </div>
     </div>
   </nav>
 </template>
+
+<style scoped>
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+</style>

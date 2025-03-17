@@ -3,12 +3,17 @@ import Hero from '@/components/Hero.vue';
 import HomeCards from '@/components/HomeCards.vue';
 import JobListings from '@/components/JobListings.vue';
 import Navbar2 from '@/components/Navbar2.vue';
+import Footer from '@/components/Footer.vue';
 
 </script>
 
 <template>
-  <Navbar2/>
-  <Hero />
-  <HomeCards />
-  <JobListings :limit="3" :showButton="false" />
+  <div class="min-h-screen flex flex-col">
+    <Navbar2 />
+    <main class="flex-grow">
+      <Hero />
+      <HomeCards />
+    </main>
+    <Footer />
+  </div>
 </template>

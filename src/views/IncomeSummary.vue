@@ -1,64 +1,59 @@
 <template>
+  <div class="min-h-screen flex flex-col">
     <Navbar2 />
-    
-    <div class="cBody">
-      <div class="report-container">
-        
-        <h1>MAPATO</h1>
-        
-        <!-- Data Table -->
-        <table>
-          <thead>
-            <tr>
-              <th>Pato</th>
-              <th>Mtandao</th>
-              <th>Muamala</th>
-              <th>Tarehe</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="income in incomes" :key="income.reference">
-          <td>{{ income.amount }}</td>
-          <td>{{ income.mPayment }}</td>
-          <td>{{ income.reference }}</td>
-          <td>{{ income.date }}</td>
-        </tr>
-          </tbody>
-        </table>
+    <main class="flex-grow">
+      <div class="cBody">
+        <div class="report-container">
+          <h1>MAPATO</h1>
+          <!-- Data Table -->
+          <table>
+            <thead>
+              <tr>
+                <th>Pato</th>
+                <th>Mtandao</th>
+                <th>Muamala</th>
+                <th>Tarehe</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="income in incomes" :key="income.reference">
+                <td>{{ income.amount }}</td>
+                <td>{{ income.mPayment }}</td>
+                <td>{{ income.reference }}</td>
+                <td>{{ income.date }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      </div>
-    </template>
-    
-    
-    
-    
-    <script setup>
-    import Navbar2 from '@/components/Navbar2.vue';
-    import { ref, onMounted, computed } from 'vue';
-    
-    const incomes = ref([]);
-    const searchQuery = ref('');
-    
-    onMounted(async () => {
-      try {
-        const response = await fetch('http://localhost:5001/servers/getincome');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        incomes.value = data;
-      } catch (error) {
-        console.error('Error fetching report data:', error);
-      }
-    });
-    
-    </script>
-    
-    
-    <style scoped>
+    </main>
+    <Footer />
+  </div>
+</template>
 
+<script setup>
+import Navbar2 from '@/components/Navbar2.vue';
+import Footer from '@/components/Footer.vue';
+import { ref, onMounted } from 'vue';
 
+const incomes = ref([]);
+const searchQuery = ref('');
 
+onMounted(async () => {
+  try {
+    const response = await fetch('http://localhost:5001/servers/getincome');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    incomes.value = data;
+  } catch (error) {
+    console.error('Error fetching report data:', error);
+  }
+});
+</script>
+
+<style scoped>
 /* .report-container {
   display: flex;
   flex-direction: column;
@@ -139,3 +134,17 @@ table {
     color: #ccc; /* Light gray text for better readability */
   }
 </style>
+
+/* Add this to ensure proper footer positioning */
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}

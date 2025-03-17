@@ -1,32 +1,36 @@
 <template>
-<Navbar2 />
+  <div class="min-h-screen flex flex-col">
+    <Navbar2 />
+    <main class="flex-grow">
+      <div class="cBody">
+        <div class="report-container">
 
-<div class="cBody">
-  <div class="report-container">
-
-    <h1>MATUMIZI</h1>
-    <!-- Data Table -->
-    <table>
-      <thead>
-        <tr>
-          <th>Bili</th>
-          <th>Namba</th>
-          <th>Mtandao</th>
-          <th>Kiasi</th>
-          <th>Tarehe</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="expense in expenses" :key="expense.bill">
-          <td>{{ expense.bill }}</td>
-          <td>{{ expense.pNumber }}</td>
-          <td>{{ expense.mPayment }}</td>
-          <td>{{ expense.amount }}</td>
-          <td>{{ expense.date }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+          <h1>MATUMIZI</h1>
+          <!-- Data Table -->
+          <table>
+            <thead>
+              <tr>
+                <th>Bili</th>
+                <th>Namba</th>
+                <th>Mtandao</th>
+                <th>Kiasi</th>
+                <th>Tarehe</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="expense in expenses" :key="expense.bill">
+                <td>{{ expense.bill }}</td>
+                <td>{{ expense.pNumber }}</td>
+                <td>{{ expense.mPayment }}</td>
+                <td>{{ expense.amount }}</td>
+                <td>{{ expense.date }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+    <Footer />
   </div>
 </template>
 
@@ -35,6 +39,7 @@
 
 <script setup>
 import Navbar2 from '@/components/Navbar2.vue';
+import Footer from '@/components/Footer.vue';
 import { ref, onMounted, computed } from 'vue';
 
 

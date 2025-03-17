@@ -1,32 +1,23 @@
 <template>
-  <div class="profile-container">
+  <div class="min-h-screen flex flex-col">
     <Navbar2 />
-    <main class="main-content">
+    <main class="flex-grow main-content">
       <ProfileHeader />
       <AccountInformation />
       <AccountStatistics />
       <SecuritySettings />
     </main>
+    <Footer />
   </div>
 </template>
 
-<script>
+<script setup>
 import ProfileHeader from "../components/ProfileHeader.vue";
 import AccountInformation from "../components/AccountInformation.vue";
 import AccountStatistics from "../components/AccountStatistics.vue";
 import SecuritySettings from "../components/SecuritySettings.vue";
 import Navbar2 from "@/components/Navbar2.vue";
-
-export default {
-  name: "ProfileSettings",
-  components: {
-    ProfileHeader,
-    AccountInformation,
-    AccountStatistics,
-    SecuritySettings,
-    Navbar2,
-  },
-};
+import Footer from '@/components/Footer.vue';
 </script>
 
 <style scoped>

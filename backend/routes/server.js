@@ -15,57 +15,11 @@ router.get("/", (req, res) => {
   });
 });
 
-// READ
-// router.get("/:id", (req, res) => {
-//   const id = req.params.id;
-
-//   const sql = `SELECT * FROM books WHERE id = ${id}`;
-
-//   db.query(sql, (err, result) => {
-//     if (err) {
-//       throw err;
-//     }
-//     res.json(result[0]);
-//   });
-// });
 
 
-// CREATE
-// router.post("/", (req, res) => {
-//   const title = req.body.title;
-//   const author = req.body.author;
-
-//   const newTodo = { title, author, completed: false };
-
-//   console.log(newTodo.title)
-//   const sql = "INSERT INTO books (title, author, completed) VALUES (?, ?, ?)";
-//   db.query(sql, [title, author, false], (err, result) => {
-//     if (err) {
-//       throw err;
-//     }
-//     newTodo.id = result.insertId;
-//     res.json(newTodo);
-//   });
-// });
 
 
-// CREATE
-// router.post("/", (req, res) => {
-//   const title = req.body.title;
-//   const author = req.body.author;
 
-//   const newTodo = { title, author, completed: false };
-
-//   console.log(newTodo.title)
-//   const sql = "INSERT INTO books (title, author, completed) VALUES (?, ?, ?)";
-//   db.query(sql, [title, author, false], (err, result) => {
-//     if (err) {
-//       throw err;
-//     }
-//     newTodo.id = result.insertId;
-//     res.json(newTodo);
-//   });
-// });
 
 
 //CREATE
@@ -92,40 +46,7 @@ router.post("/payments", (req, res) => {
 //   const { username, email, password, dob } = req.body;
 
 //   // Basic validation
-//   if (!username || !email || !password || !dob ) {
-//     return res.status(400).json({   
-//  msg: 'Please enter all fields'   
-//  });
-//   }
-
-//   try {
-//     // Check if the user already exists (using prepared statement)
-//     const [existingUser] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-//     if (existingUser.length > 0) {
-//       return res.status(400).json({   
-//  msg: 'User already exists' });
-//     }
-
-//     // Hash the password using bcrypt (replace with actual hashing logic)
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     // Create a new user
-//     const newUser = new User({
-//       username,
-//       email,
-//       password: hashedPassword,
-//     });
-
-//     // Save the user to the database
-//     await newUser.save();
-
-//     res.json({   
-//  msg: 'User registered successfully' });
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send('Server error');
-//   }
-// });
+//   
 
 router.post('/user', async (req, res) => {
   try {
@@ -260,7 +181,42 @@ router.get('/getincome', (req, res) => {
   });
 });
 
+// GET route to fetch page content
+router.get("/api/page-content/:pageName", (req, res) => {
+  const pageName = req.params.pageName;
+  const sql = "SELECT * FROM page_content WHERE page_name = ?";
+  
+  db.query(sql, [pageName], (err, results) => {
+    if (err) {
+      console.error('Error fetching content:', err);
+      return res.status(500).json({ error: 'An error occurred while fetching content' });
+    }
+    
+    // If no results found, return default content
+    if (results.length === 0) {
+      return res.json({
+        title: 'Kuimarisha wajasiriamali kwa ufuatiliaji rahisi wa rekodi za mapato na matumizi.',
+        description: 'Tunawasaidia wajasiriamali walio rasmi kuwa na taarifa kuhusu mapato na matumizi yao ili wawe na muhtasari mzuriwa fedha zao'
+      });
+    }
+    
+    res.json(results[0]);
+  });
+});
 
+// POST route to add/update page content
+router.post("/page-content", (req, res) => {
+  const { title, description, pageName } = req.body;
+
+  const sql = "INSERT INTO page_content (title, description, page_name) VALUES (?, ?, ?)";
+  db.query(sql, [title, description, pageName], (err, result) => {
+    if (err) {
+      console.error('Error saving content:', err);
+      return res.status(500).json({ error: 'An error occurred while saving content' });
+    }
+    res.json({ id: result.insertId, title, description, page_name: pageName });
+  });
+});
 
 // UPDATE
 router.put("/:id", (req, res) => {
