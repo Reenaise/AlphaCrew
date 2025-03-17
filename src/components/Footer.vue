@@ -9,7 +9,7 @@ const isActiveLink = (routePath) => {
 </script>
 
 <template>
-  <footer class="bg-customGreen py-8 text-green mt-auto">
+  <footer class="bg-[#14532D] py-8 mt-auto">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Company Info -->
@@ -34,27 +34,27 @@ const isActiveLink = (routePath) => {
           <h3 class="text-xl font-bold mb-4 text-green">Viungo vya Haraka</h3>
           <ul class="space-y-2">
             <li>
-              <RouterLink to="/home2" class="text-green hover:text-green-300">
+              <RouterLink to="/home2" class="text-green hover:text-green-300 underline decoration-inherit">
                 <i class="fas fa-home mr-2"></i>Nyumbani
               </RouterLink>
             </li>
             <li>
-              <RouterLink to="/expenses" class="text-green hover:text-green-300">
+              <RouterLink to="/expenses" class="text-green hover:text-green-300 underline decoration-inherit">
                 <i class="fas fa-money-bill-wave mr-2"></i>Matumizi
               </RouterLink>
             </li>
             <li>
-              <RouterLink to="/income" class="text-green hover:text-green-300">
+              <RouterLink to="/income" class="text-green hover:text-green-300 underline decoration-inherit">
                 <i class="fas fa-coins mr-2"></i>Mapato
               </RouterLink>
             </li>
             <li>
-              <RouterLink to="/ExpenseSummary" class="text-green hover:text-green-300">
+              <RouterLink to="/ExpenseSummary" class="text-green hover:text-green-300 underline decoration-inherit">
                 <i class="fas fa-chart-pie mr-2"></i>Ripoti ya Matumizi
               </RouterLink>
             </li>
             <li>
-              <RouterLink to="/IncomeSummary" class="text-green hover:text-green-300">
+              <RouterLink to="/IncomeSummary" class="text-green hover:text-green-300 underline decoration-inherit">
                 <i class="fas fa-chart-line mr-2"></i>Ripoti ya Mapato
               </RouterLink>
             </li>
@@ -80,12 +80,16 @@ const isActiveLink = (routePath) => {
 
 <style scoped>
 .text-green {
-  color: #36B34A;
+  color: #F8F9FA;
 }
 
 footer {
   margin-top: auto;
-  border-top: 1px solid rgba(54, 179, 74, 0.2);
+  border-top: 1px solid rgba(0, 77, 64, 0.2);
+}
+
+a {
+  text-decoration-color: currentColor;
 }
 </style>
 

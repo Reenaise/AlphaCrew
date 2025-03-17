@@ -40,8 +40,8 @@ const toggleDropdown = () => {
                 to="/home2"
                 :class="[
                   isActiveLink('/home2')
-                    ? 'bg-green-900'
-                    : 'hover:bg-gray-900 hover:text-white',
+                    ? 'bg-[#14532D]'
+                    : 'hover:bg-[#14532D] hover:text-white',
                   'text-green',
                   'px-3',
                   'py-2',
