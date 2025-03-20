@@ -13,7 +13,7 @@ import Footer from '@/components/Footer.vue';
       <Hero />
       <HomeCards />
     </main>
-    <Footer />
+    <!-- <Footer /> -->
   </div>
   <!-- <JobListings :limit="3" :showButton="false" /> -->
 </template>

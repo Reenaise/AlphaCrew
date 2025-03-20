@@ -2,18 +2,49 @@
 import { RouterLink, useRoute } from 'vue-router';
 import logo from '@/assets/img/sifa.png';
 import { ref } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import profileIcon from '@/assets/img/profile.jpg';
+
+
+// Fafanua isDropdownOpen kwa kutumia ref
+const isDropdownOpen = ref(false);
+
+// Fafanua toggleDropdown function
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
 
 const isActiveLink = (routePath) => {
   const route = useRoute();
   return route.path === routePath;
 };
 
-const isDropdownOpen = ref(false);
+const closeDropdown = (event) => {
+  // Tumia refs kwa dropdown na profile button
+  const dropdown = document.querySelector('.dropdown-menu'); // Dropdown menu element
+  const profileButton = document.querySelector('.profile-button'); // Profile button element
 
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
+  // Hakikisha kuwa dropdown na profileButton zipo kabla ya kuzitumia
+  if (dropdown && profileButton) {
+    // Funga dropdown ikiwa click imefanywa nje ya dropdown na profile button
+    if (!dropdown.contains(event.target) && !profileButton.contains(event.target)) {
+      isDropdownOpen.value = false;
+    }
+  }
 };
+
+
+
+// Ongeza event listener wakati component ime-mount
+onMounted(() => {
+  document.addEventListener('click', closeDropdown);
+});
+
+// Ondoa event listener kabla ya component kuharibiwa
+onUnmounted(() => {
+  document.removeEventListener('click', closeDropdown);
+});
+
 </script>
 
 <template>
@@ -165,14 +196,17 @@ const toggleDropdown = () => {
           </div>
           
           <!-- Replace logout link with profile dropdown -->
+          <!-- Profile Dropdown -->
           <div class="relative">
-            <button @click="toggleDropdown" class="flex items-center space-x-2">
+            <button 
+              @click="toggleDropdown" 
+              class="flex items-center space-x-2 profile-button" 
+            >
               <img 
                 :src="profileIcon" 
                 alt="Profile" 
                 class="w-8 h-8 rounded-full cursor-pointer"
               />
-              <!-- Add chevron down icon -->
               <svg
                 class="w-4 h-4 text-green-500"
                 xmlns="http://www.w3.org/2000/svg"
@@ -188,28 +222,35 @@ const toggleDropdown = () => {
             </button>
             
             <!-- Dropdown Menu -->
-            <div v-if="isDropdownOpen" 
-                 class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-              <div class="py-1">
-                <RouterLink 
-                  to="/profile-settings"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Mpangilio wa Akaunti
-                </RouterLink>
-                <RouterLink 
-                  to="/"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Jiondoe
-                </RouterLink>
+            <div 
+  v-if="isDropdownOpen" 
+  class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[#1A1A1A] text-white ring-opacity-0 focus:ring-0 outline-none dropdown-menu"
+>
+  <div class="py-1">
+    <RouterLink 
+      to="/profile-settings"
+      class="block px-4 py-2 text-sm text-white hover:bg-gray-700 no-underline hover:no-underline"
+    @mouseleave="closeDropdownOnMouseLeave"
+      >
+      <i class="fas fa-cog mr-2"></i> 
+      Mpangilio
+    </RouterLink>
+    <RouterLink 
+      to="/"
+      class="block px-4 py-2 text-sm text-white hover:bg-gray-700 no-underline hover:no-underline"
+    >
+      <i class="fas fa-sign-out-alt mr-2"></i>
+      Jiondoe
+    </RouterLink>
+  </div>
+</div>
+
               </div>
             </div>
           </div>
           
         </div>
-      </div>
-    </div>
+    
   </nav>
 </template>
 
@@ -220,5 +261,23 @@ const toggleDropdown = () => {
 
 .absolute {
   position: absolute;
+  z-index: 1000; /* Hakikisha dropdown iko juu ya maudhui mengine */
+}
+
+.dropdown-menu {
+  display: block; /* Hakikisha dropdown inaonekana */
+  width: 8rem; /* Punguza width kwa 8rem (128px) */
+}
+
+.dropdown-menu a {
+  display: flex; /* Tumia flexbox kwa icons na maandishi */
+  align-items: center; /* Align icons na maandishi kwa katikati */
 }
 </style>
+
+
+
+
+
+
+

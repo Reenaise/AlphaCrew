@@ -9,16 +9,18 @@
           <table>
             <thead>
               <tr>
-                <th>Pato</th>
                 <th>Mtandao</th>
+                <th>Namba</th>
+                <th>Pato</th>
                 <th>Muamala</th>
                 <th>Tarehe</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="income in incomes" :key="income.reference">
-                <td>{{ income.amount }}</td>
                 <td>{{ income.mPayment }}</td>
+                <td>{{ income.pNumber }}</td>
+                <td>{{ income.amount }}</td>
                 <td>{{ income.reference }}</td>
                 <td>{{ income.date }}</td>
               </tr>
@@ -126,9 +128,8 @@ table {
 
   th {
     background-color: black;
-    color: #fff; /* White text for the header */
-    text-transform: uppercase; /* Optional: capitalize headers */
-  }
+    color: #ccc;
+    }
 
   td {
     color: #ccc; /* Light gray text for better readability */

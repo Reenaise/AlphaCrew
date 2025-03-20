@@ -12,8 +12,9 @@
               <tr>
                 <th>Bili</th>
                 <th>Namba</th>
-                <th>Mtandao</th>
+                <!-- <th>Mtandao</th> -->
                 <th>Kiasi</th>
+                <th>Muamala</th>
                 <th>Tarehe</th>
               </tr>
             </thead>
@@ -21,8 +22,9 @@
               <tr v-for="expense in expenses" :key="expense.bill">
                 <td>{{ expense.bill }}</td>
                 <td>{{ expense.pNumber }}</td>
-                <td>{{ expense.mPayment }}</td>
+                <!-- <td>{{ expense.mPayment }}</td> -->
                 <td>{{ expense.amount }}</td>
+                <td>{{ expense.reference }}</td>
                 <td>{{ expense.date }}</td>
               </tr>
             </tbody>
@@ -126,8 +128,7 @@ table {
 
   th {
     background-color: black;
-    color: #fff; /* White text for the header */
-    text-transform: uppercase; /* Optional: capitalize headers */
+    color: #ccc; /* White text for the header */
   }
 
   td {
