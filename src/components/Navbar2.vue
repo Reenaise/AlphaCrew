@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink, useRoute } from 'vue-router';
-import logo from '@/assets/img/sifa.png';
+import logo from '@/assets/img/cash.png';
 import { ref } from 'vue';
 import { onMounted, onUnmounted } from 'vue';
 import profileIcon from '@/assets/img/profile.jpg';

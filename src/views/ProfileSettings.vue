@@ -5,7 +5,7 @@
       <ProfileHeader />
       <AccountInformation />
       <AccountStatistics />
-      <SecuritySettings />
+      <!-- <SecuritySettings /> -->
     </main>
     <Footer />
   </div>

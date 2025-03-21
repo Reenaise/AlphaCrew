@@ -2,16 +2,39 @@
   <section class="profile-header">
     <div class="profile-image" role="img" aria-label="Profile picture"></div>
     <div class="profile-info">
-      <h1 class="profile-name">John Doe</h1>
-      <p class="profile-email">john@example.com</p>
+      <h1 class="profile-name">{{ accountInfo.name || 'Loading...' }}</h1>
+      <p class="profile-email">{{ accountInfo.email || 'Loading...' }}</p>
     </div>
     <button class="edit-profile" type="button">Edit Profile</button>
   </section>
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
+
 export default {
-  name: "ProfileHeader",
+  setup() {
+    const accountInfo = ref({ name: "", email: "" });
+
+    onMounted(async () => {
+      try {
+        const response = await fetch("http://localhost:5001/servers/userInfo");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        console.log("Fetched data:", data); // Debugging: Check if correct data is received
+        accountInfo.value = {
+          name: data.name, // Ensure correct property name
+          email: data.email,
+        };
+      } catch (error) {
+        console.error("Error fetching account information:", error);
+      }
+    });
+
+    return { accountInfo };
+  },
 };
 </script>
 
@@ -23,27 +46,30 @@ export default {
 }
 
 .profile-image {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
+  background-image: url("@/assets/img/profile.jpg");
+  background-size: cover;
+  background-position: center;
   background-color: #d9d9d9;
   border-radius: 50%;
 }
 
 .profile-info {
-  margin-left: 24px;
+  margin-left: 30px;
   flex-grow: 1;
 }
 
 .profile-name {
   color: #f8f9fa;
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 700;
   line-height: 48px;
 }
 
 .profile-email {
   color: rgba(248, 249, 250, 0.5);
-  font-size: 16px;
+  font-size: 12px;
   line-height: 24px;
 }
 
@@ -51,9 +77,10 @@ export default {
   background-color: #14532d;
   color: #f8f9fa;
   border: none;
+  margin-left: 20px;
   border-radius: 4px;
-  padding: 12px 24px;
-  font-size: 16px;
+  padding: 6px 14px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
 }

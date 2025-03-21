@@ -1,24 +1,43 @@
 <template>
   <section class="info-section">
     <h2 class="section-title">Account Information</h2>
+    <!-- <div class="info-row">
+      <dt class="info-label">Date of birth</dt>
+      <dd class="info-value">{{ accountInfo.dob || 'Loading...' }}</dd>
+    </div> -->
     <div class="info-row">
-      <dt class="info-label">Phone Number</dt>
-      <dd class="info-value">+255 123 456 789</dd>
-    </div>
-    <div class="info-row">
-      <dt class="info-label">Kipat</dt>
-      <dd class="info-value">Business</dd>
-    </div>
-    <div class="info-row">
-      <dt class="info-label">Tarehe ya kuzaliwa</dt>
-      <dd class="info-value">2023-01-15</dd>
+      <dt class="info-label">Income Range</dt>
+      <dd class="info-value">{{ accountInfo.incomeRange || 'Loading...' }}</dd>
     </div>
   </section>
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
+
 export default {
-  name: "AccountInformation",
+  setup() {
+    const accountInfo = ref({ name: "", email: "" });
+
+    onMounted(async () => {
+      try {
+        const response = await fetch("http://localhost:5001/servers/userInfo");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        console.log("Fetched data:", data); // Debugging: Check if correct data is received
+        accountInfo.value = {
+          // dob: data.dob, // Ensure correct property name
+          incomeRange: data.incomeRange,
+        };
+      } catch (error) {
+        console.error("Error fetching account information:", error);
+      }
+    });
+
+    return { accountInfo };
+  },
 };
 </script>
 
