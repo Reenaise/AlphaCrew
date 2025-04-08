@@ -38,41 +38,26 @@
 </template>
 
 <script setup>
+
 import Navbar from '@/components/Navbar.vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import authHelper, { setRouter } from '@/auth/authHelper';
 
 const email = ref('');
 const password = ref('');
-const errorMessage = ref(''); // Holds error messages
+const errorMessage = ref('');
 const router = useRouter();
+
+// Initialize router in authHelper
+setRouter(router);
 
 async function submitLogin() {
   try {
-    const response = await fetch('http://localhost:5001/servers/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email.value,
-        password: password.value,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok && data.success) {
-      // If login is successful, redirect to the home page
-      router.push('/home2');
-    } else {
-      // Set error message for invalid credentials
-      errorMessage.value = data.error || 'Invalid email or password';
-
-    }
+    await authHelper.login(email.value, password.value);
+    router.push('/home2');
   } catch (error) {
-    // Handle any errors during the request
-    errorMessage.value = 'An error occurred. Please try again later.';
+    errorMessage.value = error.message || 'Invalid email or password';
   }
 }
 </script>

@@ -32,14 +32,22 @@ export default {
 
     const fetchStatistics = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/servers/userStatistics`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch statistics");
-        }
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `http://localhost:5001/servers/userStatistics`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Send JWT token
+            },
+          }
+        );
+
+        if (!response.ok) throw new Error("Failed to fetch statistics");
+
         const data = await response.json();
         statistics.value = data;
       } catch (error) {
-        console.error("Error fetching account statistics:", error);
+        console.error("Error fetching statistics:", error);
       }
     };
 

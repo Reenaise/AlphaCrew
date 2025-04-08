@@ -1,3 +1,101 @@
+<script setup>
+import Navbar2 from '@/components/Navbar2.vue';
+import Footer from '@/components/Footer.vue';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useRouter } from 'vue-router';
+import authHelper from '@/auth/authHelper';
+
+const router = useRouter();
+const name = ref("");
+const phoneNumber = ref("");
+const mobilePayment = ref("");
+const amount = ref("");
+const dob = ref("");
+const reference = ref("");
+
+// Check authentication on component mount
+// onMounted(() => {
+//   if (!authHelper.isAuthenticated()) {
+//     router.push('/login');
+//   }
+// });
+
+// setRouter(router); // Initialize router in authHelper
+
+let tokenCheckInterval;
+
+const checkTokenValidity = () => {
+  if (!authHelper.isAuthenticated()) {
+    authHelper.logout();
+  }
+};
+
+onMounted(() => {
+  const user = localStorage.getItem("user")
+  console.log(user)
+  
+  checkTokenValidity();
+  tokenCheckInterval = setInterval(checkTokenValidity, 5 * 1000); // Check every 5 sec
+});
+
+onUnmounted(() => {
+  clearInterval(tokenCheckInterval);
+});
+
+async function submitPayment() {
+  try {
+    const token = authHelper.getToken();
+    const user = JSON.parse(localStorage.getItem("user")); // Parse the JSON string
+    console.log("User ID:", user.id); // Should now correctly log 18
+    const response = await fetch(
+      "http://localhost:5001/servers/expenses",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          bill: name.value,
+          pNumber: phoneNumber.value,
+          mPayment: mobilePayment.value,
+          amount: amount.value,
+          date: dob.value,
+          reference: reference.value,
+          user_id: user.id,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        authHelper.logout();
+        router.push('/login');
+        return;
+      }
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    alert("Data has been submitted");
+    // Reset form
+    name.value = "";
+    phoneNumber.value = "";
+    mobilePayment.value = "";
+    amount.value = "";
+    dob.value = "";
+    reference.value = "";
+    console.log("Payment data stored:", data);
+  } catch (error) {
+    console.error("Error storing payment data:", error);
+    if (error.message === 'Unauthorized') {
+      authHelper.logout();
+      router.push('/login');
+    }
+  }
+}
+</script>
+
 <template>
   <div class="min-h-screen flex flex-col">
     <Navbar2 />
@@ -104,56 +202,7 @@
   </div>
 </template>
 
-<script setup>
-import Navbar2 from '@/components/Navbar2.vue';
-import Footer from '@/components/Footer.vue';
-import { ref } from "vue";
 
-const name = ref("");
-const phoneNumber = ref("");
-const mobilePayment = ref("");
-const amount = ref("");
-const dob = ref("");
-const reference = ref("");
-
-async function submitPayment() {
-  try {
-    const response = await fetch(
-      "http://localhost:5001/servers/expenses",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          bill: name.value,
-          pNumber: phoneNumber.value,
-          mPayment: mobilePayment.value,
-          amount: amount.value,
-          date: dob.value,
-          reference: reference.value,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-    alert("Data has been submitted");
-    name.value = "";
-    phoneNumber.value = "";
-    mobilePayment.value = "";
-    amount.value = "";
-    dob.value = "";
-    reference.value = "";
-    console.log("Payment data stored:", data);
-  } catch (error) {
-    console.error("Error storing payment data:", error);
-  }
-}
-</script>
 
 <style scoped>
 .cBody {

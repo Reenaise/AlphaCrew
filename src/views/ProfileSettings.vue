@@ -1,3 +1,35 @@
+<script setup>
+import ProfileHeader from "../components/ProfileHeader.vue";
+import AccountInformation from "../components/AccountInformation.vue";
+import AccountStatistics from "../components/AccountStatistics.vue";
+import SecuritySettings from "../components/SecuritySettings.vue";
+import Navbar2 from "@/components/Navbar2.vue";
+import Footer from '@/components/Footer.vue';
+import { onMounted, onUnmounted } from "vue";
+import { useRouter } from 'vue-router';
+import authHelper from '@/auth/authHelper';
+
+const router = useRouter();
+let tokenCheckInterval;
+
+const checkTokenValidity = () => {
+  if (!authHelper.isAuthenticated()) {
+    authHelper.logout();
+    router.push('/login');
+  }
+};
+
+onMounted(() => {
+  checkTokenValidity(); // Initial check
+  tokenCheckInterval = setInterval(checkTokenValidity, 5 * 1000); // Check every 5 seconds
+});
+
+onUnmounted(() => {
+  clearInterval(tokenCheckInterval);
+});
+</script>
+
+
 <template>
   <div class="min-h-screen flex flex-col">
     <Navbar2 />
@@ -11,14 +43,7 @@
   </div>
 </template>
 
-<script setup>
-import ProfileHeader from "../components/ProfileHeader.vue";
-import AccountInformation from "../components/AccountInformation.vue";
-import AccountStatistics from "../components/AccountStatistics.vue";
-import SecuritySettings from "../components/SecuritySettings.vue";
-import Navbar2 from "@/components/Navbar2.vue";
-import Footer from '@/components/Footer.vue';
-</script>
+
 
 <style scoped>
 .profile-container {

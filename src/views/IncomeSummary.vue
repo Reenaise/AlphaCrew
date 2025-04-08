@@ -1,3 +1,76 @@
+<script setup>
+import Navbar2 from '@/components/Navbar2.vue';
+import Footer from '@/components/Footer.vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
+import authHelper from '@/auth/authHelper';
+
+const router = useRouter();
+const incomes = ref([]);
+const searchQuery = ref('');
+let tokenCheckInterval;
+
+const checkTokenValidity = () => {
+  if (!authHelper.isAuthenticated()) {
+    authHelper.logout();
+    router.push('/login');
+  }
+};
+
+const fetchIncomes = async () => {
+  try {
+    // Check authentication before making the request
+    if (!authHelper.isAuthenticated()) {
+      authHelper.logout();
+      router.push('/login');
+      return;
+    }
+
+    const token = authHelper.getToken();
+    const response = await fetch('http://localhost:5001/servers/getincome', {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    
+    // Handle 401 Unauthorized responses
+    if (response.status === 401) {
+      authHelper.logout();
+      router.push('/login');
+      return;
+    }
+
+    // Handle other error responses
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    incomes.value = data;
+  } catch (error) {
+    console.error('Error fetching income data:', error);
+    
+    // Handle network errors or authorization issues
+    if (error.message.includes('401') || error.message === 'Unauthorized') {
+      authHelper.logout();
+      router.push('/login');
+    }
+  }
+};
+
+onMounted(() => {
+  checkTokenValidity(); // Initial check
+  tokenCheckInterval = setInterval(checkTokenValidity, 5 * 1000); // Check every 30 seconds
+  fetchIncomes();
+});
+
+onUnmounted(() => {
+  clearInterval(tokenCheckInterval);
+});
+</script>
+
+
+
 <template>
   <div class="min-h-screen flex flex-col">
     <Navbar2 />
@@ -33,27 +106,7 @@
   </div>
 </template>
 
-<script setup>
-import Navbar2 from '@/components/Navbar2.vue';
-import Footer from '@/components/Footer.vue';
-import { ref, onMounted } from 'vue';
 
-const incomes = ref([]);
-const searchQuery = ref('');
-
-onMounted(async () => {
-  try {
-    const response = await fetch('http://localhost:5001/servers/getincome');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    incomes.value = data;
-  } catch (error) {
-    console.error('Error fetching report data:', error);
-  }
-});
-</script>
 
 <style scoped>
 /* .report-container {

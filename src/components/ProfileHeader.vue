@@ -18,7 +18,13 @@ export default {
 
     onMounted(async () => {
       try {
-        const response = await fetch("http://localhost:5001/servers/userInfo");
+        const token = localStorage.getItem("token"); // Get token from localStorage
+        const response = await fetch("http://localhost:5001/servers/userInfo", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Send token in the Authorization header
+          },
+        });
+        
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }

@@ -1,17 +1,3 @@
-<template>
-  <section class="info-section">
-    <h2 class="section-title">Account Information</h2>
-    <!-- <div class="info-row">
-      <dt class="info-label">Date of birth</dt>
-      <dd class="info-value">{{ accountInfo.dob || 'Loading...' }}</dd>
-    </div> -->
-    <div class="info-row">
-      <dt class="info-label">Income Range</dt>
-      <dd class="info-value">{{ accountInfo.incomeRange || 'Loading...' }}</dd>
-    </div>
-  </section>
-</template>
-
 <script>
 import { ref, onMounted } from "vue";
 
@@ -19,16 +5,24 @@ export default {
   setup() {
     const accountInfo = ref({ name: "", email: "" });
 
+    // In your Vue component
     onMounted(async () => {
       try {
-        const response = await fetch("http://localhost:5001/servers/userInfo");
+        const token = localStorage.getItem("token"); // Get token from localStorage
+        const response = await fetch("http://localhost:5001/servers/userInfo", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Send token in the Authorization header
+          },
+        });
+
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+
         const data = await response.json();
-        console.log("Fetched data:", data); // Debugging: Check if correct data is received
+        console.log("Fetched data:", data);
+
         accountInfo.value = {
-          // dob: data.dob, // Ensure correct property name
           incomeRange: data.incomeRange,
         };
       } catch (error) {
@@ -40,6 +34,20 @@ export default {
   },
 };
 </script>
+
+<template>
+  <section class="info-section">
+    <h2 class="section-title">Account Information</h2>
+    <!-- <div class="info-row">
+      <dt class="info-label">Date of birth</dt>
+      <dd class="info-value">{{ accountInfo.dob || 'Loading...' }}</dd>
+    </div> -->
+    <div class="info-row">
+      <dt class="info-label">Income Range</dt>
+      <dd class="info-value">{{ accountInfo.incomeRange || "Loading..." }}</dd>
+    </div>
+  </section>
+</template>
 
 <style scoped>
 .info-section {

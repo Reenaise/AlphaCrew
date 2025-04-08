@@ -1,3 +1,100 @@
+<script setup>
+import Navbar2 from "@/components/Navbar2.vue";
+import Footer from '@/components/Footer.vue';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useRouter } from 'vue-router';
+import authHelper from '@/auth/authHelper';
+
+const router = useRouter();
+const reference = ref("");
+const phoneNumber = ref("");
+const mobilePayment = ref("");
+const amount = ref("");
+const dob = ref("");
+let tokenCheckInterval;
+
+const checkTokenValidity = () => {
+  if (!authHelper.isAuthenticated()) {
+    authHelper.logout();
+    router.push('/login');
+  }
+};
+
+onMounted(() => {
+  checkTokenValidity(); // Initial check
+  tokenCheckInterval = setInterval(checkTokenValidity, 5 * 1000); // Check every 30 seconds
+});
+
+onUnmounted(() => {
+  clearInterval(tokenCheckInterval);
+});
+
+async function submitPayment() {
+  try {
+    // Check authentication before submission
+    if (!authHelper.isAuthenticated()) {
+      authHelper.logout();
+      router.push('/login');
+      return;
+    }
+
+    const token = authHelper.getToken();
+    const user = JSON.parse(localStorage.getItem("user")); // Parse the JSON string
+    console.log("User ID:", user.id); // Should now correctly log 18
+
+    const response = await fetch("http://localhost:5001/servers/income", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        pNumber: phoneNumber.value,
+        mPayment: mobilePayment.value,
+        amount: amount.value,
+        date: dob.value,
+        reference: reference.value,
+        user_id: user.id,
+      }),
+    });
+
+    // Handle 401 Unauthorized responses
+    if (response.status === 401) {
+      authHelper.logout();
+      router.push('/login');
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    alert("Data has been submitted successfully!");
+    
+    // Reset form
+    reference.value = "";
+    phoneNumber.value = "";
+    mobilePayment.value = "";
+    amount.value = "";
+    dob.value = "";
+    
+    console.log("Payment data stored:", data);
+  } catch (error) {
+    console.error("Error storing payment data:", error);
+    
+    // Handle network errors or authorization issues
+    if (error.message.includes('401') || error.message === 'Unauthorized') {
+      authHelper.logout();
+      router.push('/login');
+    } else {
+      alert("Failed to submit income. Please try again.");
+    }
+  }
+}
+</script>
+
+
 <template>
   <div class="min-h-screen flex flex-col">
     <Navbar2 />
@@ -96,49 +193,6 @@
   </div>
 </template>
 
-<script setup>
-import Navbar2 from "@/components/Navbar2.vue";
-import Footer from '@/components/Footer.vue';
-import { ref } from "vue";
-
-const reference = ref("");
-const phoneNumber = ref("");
-const mobilePayment = ref("");
-const amount = ref("");
-const dob = ref("");
-
-async function submitPayment() {
-  try {
-    const response = await fetch("http://localhost:5001/servers/income", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        pNumber: phoneNumber.value,
-        mPayment: mobilePayment.value,
-        amount: amount.value,
-        date: dob.value,
-        reference: reference.value,
-      }),
-    });;
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-    alert("Data has been submitted");
-    reference.value = "";
-    phoneNumber.value = "";
-    mobilePayment.value = "";
-    amount.value = "";
-    dob.value = "";
-    console.log("Payment data stored:", data);
-  } catch (error) {
-    console.error("Error storing payment data:", error);
-  }
-}
-</script>
 
 <style scoped>
 

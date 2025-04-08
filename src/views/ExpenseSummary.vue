@@ -1,3 +1,66 @@
+<script setup>
+import Navbar2 from '@/components/Navbar2.vue';
+import Footer from '@/components/Footer.vue';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useRouter } from 'vue-router';
+import authHelper from '@/auth/authHelper';
+
+const router = useRouter();
+const expenses = ref([]);
+const searchQuery = ref('');
+
+let tokenCheckInterval;
+
+const checkTokenValidity = () => {
+  if (!authHelper.isAuthenticated()) {
+    authHelper.logout();
+    router.push('/login');
+  }
+};
+
+onMounted(() => {
+  checkTokenValidity();
+  tokenCheckInterval = setInterval(checkTokenValidity, 5 * 1000); // Check every 5 sec
+  fetchExpenses();
+});
+
+onUnmounted(() => {
+  clearInterval(tokenCheckInterval);
+});
+
+async function fetchExpenses() {
+  try {
+    const token = localStorage.getItem("token")
+    const response = await fetch('http://localhost:5001/servers/getpayment', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (response.status === 401) {
+      authHelper.logout();
+      router.push('/login');
+      return;
+    }
+    
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    
+    const data = await response.json();
+    expenses.value = data;
+  } catch (error) {
+    console.error('Error fetching report data:', error);
+    if (error.message === 'Unauthorized' || error.response?.status === 401) {
+      authHelper.logout();
+      router.push('/login');
+    }
+  }
+}
+
+</script>
+
+
 <template>
   <div class="min-h-screen flex flex-col">
     <Navbar2 />
@@ -35,33 +98,6 @@
     <Footer />
   </div>
 </template>
-
-
-
-
-<script setup>
-import Navbar2 from '@/components/Navbar2.vue';
-import Footer from '@/components/Footer.vue';
-import { ref, onMounted, computed } from 'vue';
-
-
-const expenses = ref([]);
-const searchQuery = ref('');
-
-onMounted(async () => {
-  try {
-    const response = await fetch('http://localhost:5001/servers/getpayment');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    expenses.value = data;
-  } catch (error) {
-    console.error('Error fetching report data:', error);
-  }
-});
-
-</script>
 
 
 <style scoped>
