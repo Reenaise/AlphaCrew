@@ -3,6 +3,9 @@ const db = require("../config/db");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const authenticateToken = require("../middleware/authMiddleware");
+const upload = require('../middleware/upload');
+const fs = require('fs');
+const path = require('path');
 const jwt = require("jsonwebtoken"); // JWT for token generation
 
 // Middleware to verify JWT token
@@ -653,6 +656,41 @@ router.delete("/delete-account/:userId", (req, res) => {
     }
 
     res.json({ success: true, message: "Account deleted successfully" });
+  });
+});
+
+router.post(
+  '/upload-profile-picture',
+  authenticateToken, // Ensure user is logged in
+  upload.single('profilePicture'), // Handle single file upload
+  (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const imageUrl = `/uploads/${req.file.filename}`;
+    console.log(imageUrl)
+    console.log(req.user.id)
+
+    // Update database with the new image path
+    const sql = 'UPDATE user SET profile_picture = ? WHERE id = ?';
+    db.query(sql, [imageUrl, req.user.id], (err) => {
+      if (err) {
+        return res.status(500).json({ error: 'Database update failed' });
+      }
+      res.json({ imageUrl });
+    });
+  }
+);
+
+// Get profile picture
+router.get('/profile-picture', authenticateToken, (req, res) => {
+  const sql = 'SELECT profile_picture FROM user WHERE id = ?';
+  db.query(sql, [req.user.id], (err, results) => {
+    if (err || !results[0]) {
+      return res.status(404).json({ error: 'Profile picture not found' });
+    }
+    res.json({ imageUrl: results[0].profile_picture });
   });
 });
 

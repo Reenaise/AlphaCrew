@@ -23,6 +23,8 @@ db.connect((err) => {
 });
 
 app.use(express.json());
+app.use('/uploads', express.static('public/uploads'));
+
 
 // LOGGING MIDDLEWARE
 app.use((req, res, next) => {
@@ -34,6 +36,7 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   res.send("Hello W!!!");
 });
+
 
 app.use("/servers", server);
 
